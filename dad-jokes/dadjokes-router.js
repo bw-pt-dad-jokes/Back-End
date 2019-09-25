@@ -1,20 +1,30 @@
-const axios = require('axios');
-
 const router = require('express').Router();
+const db = require('../database/db-config.js');
 
-router.get('/',  (req, res) => {
-  const requestOptions = {
-    headers: { accept: 'application/json' },
-  };
-
-  axios
-    .get('https://icanhazdadjoke.com/search', requestOptions)
-    .then(response => {
-      res.status(200).json(response.data.results);
-    })
-    .catch(err => {
-      res.status(500).json({ message: 'Error Getting Jokes', error: err });
-    });
+router.get('/', (req, res) => {
+  db('dadjokes')
+  .then(dadjoke => {
+    res.status(200).json(dadjoke);
+  })
+  .catch(error => {
+    res.status(500).json(error);
+  });
 });
 
+router.post('/api/jokes', (req, res) => {
+  db('dadjokes').insert(req.body)
+  .then(ids => {
+    const id = ids[0];
+
+    db('dadjokes')
+      .where({ id })
+      .first()
+    .then(dadjoke => {
+      res.status(201).json(dadjoke);
+    });
+  })
+  .catch(error => {
+    res.status(500).json(error);
+  });
+});
 module.exports = router;

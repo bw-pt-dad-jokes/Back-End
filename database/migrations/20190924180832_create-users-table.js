@@ -6,8 +6,21 @@ exports.up = function(knex) {
         .notNullable()
         .unique();
       users.string('password', 255).notNullable();
-    });
+    })
+    .createTable('dadjokes', users => {
+      users.increments();
+      users
+        .string('dadjoke', 500)
+        .notNullable()
+        .unique();
+      users.integer('users_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('users')
+    })
   };
+
   
   exports.down = function(knex, Promise) {
     return knex.schema.dropTableIfExists('users');
