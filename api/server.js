@@ -4,7 +4,7 @@ const cors = require('cors');
 const session = require('express-session');
 const connectSessionKnex = require('connect-session-knex');
 
-const authenticate = require('../auth/auth-middleware.js');
+// const authenticate = require('../auth/auth-middleware.js');
 const authRouter = require('../auth/auth-router.js');
 const jokesRouter = require('../dad-jokes/dadjokes-router.js');
 const db = require('../database/db-config.js');
@@ -39,8 +39,8 @@ server.use(cors());
 server.use(session(sessionConfig));
 
 server.use('/api/auth', authRouter);
-// server.use('/api/jokes', authenticate, jokesRouter);
 server.use('/api/jokes', jokesRouter);
+
 
 server.get('/', (req, res) => {
   res.json({ api: 'up' });
